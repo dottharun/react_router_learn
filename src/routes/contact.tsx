@@ -1,13 +1,39 @@
-import { Form } from "react-router-dom";
+import { Form, useLoaderData } from "react-router-dom";
+import { getContact } from "../contacts";
+
+// eslint-disable-next-line react-refresh/only-export-components, @typescript-eslint/no-explicit-any
+export async function loader({ params }: any) {
+  const contact = await getContact(params.contactId);
+  return { contact };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function Favorite({ contact }: any) {
+  // yes, this is a `let` for later
+  const favorite = contact.favorite;
+  return (
+    <Form method="post">
+      <button
+        name="favorite"
+        value={favorite ? "false" : "true"}
+        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+      >
+        {favorite ? "★" : "☆"}
+      </button>
+    </Form>
+  );
+}
 
 export default function Contact() {
-  const contact = {
-    first: "Your",
-    last: "Name",
-    avatar: "https://placekitten.com/g/200/200",
-    twitter: "your_handle",
-    notes: "Some notes",
-    favorite: true,
+  const { contact } = useLoaderData() as {
+    contact: {
+      id: string;
+      first: string;
+      avatar: string;
+      last: string;
+      twitter: string;
+      notes: string;
+    };
   };
 
   return (
@@ -56,23 +82,5 @@ export default function Contact() {
         </div>
       </div>
     </div>
-  );
-}
-
-type contactProp = { contact: { favorite: boolean } };
-
-function Favorite({ contact }: contactProp) {
-  // yes, this is a `let` for later
-  const favorite = contact.favorite;
-  return (
-    <Form method="post">
-      <button
-        name="favorite"
-        value={favorite ? "false" : "true"}
-        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-      >
-        {favorite ? "★" : "☆"}
-      </button>
-    </Form>
   );
 }

@@ -5,7 +5,7 @@ import sortBy from "sort-by";
 // fake a cache so we don't slow down stuff we've already seen
 let fakeCache = {};
 
-async function fakeNetwork(key) {
+async function fakeNetwork(key?: string) {
   if (!key) {
     fakeCache = {};
   }
@@ -35,6 +35,11 @@ export async function getContacts(query?: string) {
   return contacts.sort(sortBy("last", "createdAt"));
 }
 
+// setting data in local storage
+function set(contacts) {
+  return localforage.setItem("contacts", contacts);
+}
+
 export async function createContact() {
   await fakeNetwork();
   let id = Math.random().toString(36).substring(2, 9);
@@ -50,10 +55,6 @@ export async function getContact(id) {
   let contacts = await localforage.getItem("contacts");
   let contact = contacts.find((contact) => contact.id === id);
   return contact ?? null;
-}
-
-function set(contacts) {
-  return localforage.setItem("contacts", contacts);
 }
 
 export async function updateContact(id, updates) {

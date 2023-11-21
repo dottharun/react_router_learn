@@ -1,11 +1,18 @@
-import { Link, Outlet, useLoaderData } from "react-router-dom";
-import { getContacts } from "../contacts";
+import { Form, Link, Outlet, useLoaderData } from "react-router-dom";
+import { createContact, getContacts } from "../contacts";
 
 //should be in different folder - since its a data loader not a component
 const loader = async () => {
   const contacts = await getContacts();
   return { contacts };
 };
+
+const action = async () => {
+  const contact = createContact();
+  return { contact };
+};
+
+// new file
 
 const Root = () => {
   //loads data from nearest ancestor react-router loader
@@ -33,9 +40,11 @@ const Root = () => {
             <div id="search-spinner" aria-hidden hidden={true} />
             <div className="sr-only" aria-live="polite"></div>
           </form>
-          <form method="post">
+
+          {/* custom Form from react-dom - don't think this is good */}
+          <Form method="post">
             <button type="submit">New</button>
-          </form>
+          </Form>
         </div>
 
         <nav>
@@ -75,4 +84,4 @@ const Root = () => {
 
 export default Root;
 // eslint-disable-next-line react-refresh/only-export-components
-export { loader };
+export { loader, action };
